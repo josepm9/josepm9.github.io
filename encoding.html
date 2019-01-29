@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="description"
+          content="Online data encoding tools: url, html, base64, base32 and hexadecimal encode/decode"/>
+    <meta name="keywords" content="online,encode,decode,url,urlencode,base64,base32,hexadecimal,html,JP"/>
+    <meta name="author" content="José Peñalba Morales"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>JP - Online data encoding tools: urlencode, base64, base32 and hexadecimal</title>
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120-precomposed.png"/>
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152-precomposed.png"/>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-125835324-1"></script>
+    <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-125835324-1');
+    </script>
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.22/dist/vue.js"></script>
+    <!-- JQuery -->
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+    <!-- Popper is also required by Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+            integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+            crossorigin="anonymous"></script>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+            integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+            crossorigin="anonymous"></script>
+    <!-- Encoder scripts -->
+    <script src="js/webtoolkit.base64.js"></script>
+    <script src="js/base32.js"></script>
+    <script src="js/hex.js"></script>
+    <!-- Page Styles -->
+    <style>
+        html, body, .fill, container-fluid, textarea {
+            height: 100%;
+        }
+
+    </style>
+
+    <!-- Page script -->
+    <script language="JavaScript">
+        // Core
+        var t = function() {
+            alert("Please, select an operation");
+        }
+
+        var urlEncoder = function(encode) {
+            var transform;
+            if (encode) {
+                transform = function() {
+                    $('#destination').val(encodeURI($('#source').val()));
+                }
+            }
+            else {
+                transform = function() {
+                    $('#destination').val(decodeURI($('#source').val()));
+                }
+            }
+            return transform;
+        };
+
+        var htmlEncoder = function(encode) {
+            var transform;
+            if (encode) {
+                transform = function() {
+                    var html = $('<div/>').text($('#source').val()).html();
+                    $('#destination').val(html);
+                }
+            }
+            else {
+                transform = function() {
+                    var text = $('<div/>').html($('#source').val()).text();
+                    $('#destination').val(text);
+                }
+            }
+            return transform;
+        };
+
+        var base64Encoder = function(encode) {
+            var transform;
+            if (encode) {
+                transform = function() {
+                    $('#destination').val(Base64.encode($('#source').val()));
+                }
+            }
+            else {
+                transform = function() {
+                    $('#destination').val(Base64.decode($('#source').val()));
+                }
+            }
+            return transform;
+        };
+
+        var base32Encoder = function(encode) {
+            var transform;
+            if (encode) {
+                transform = function() {
+                    $('#destination').val(base32.encode($('#source').val()));
+                }
+            }
+            else {
+                transform = function() {
+                    $('#destination').val(base32.decode($('#source').val()));
+                }
+            }
+            return transform;
+        };
+
+        var hexEncoder = function(encode) {
+            var transform;
+            if (encode) {
+                transform = function() {
+                    $('#destination').val(Hex.encode($('#source').val()));
+                }
+            }
+            else {
+                transform = function() {
+                    $('#destination').val(Hex.decode($('#source').val()));
+                }
+            }
+            return transform;
+        };
+
+        // Initialization
+        function pageLoad() {
+            var op = function(name) {
+                name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+                var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+                var results = regex.exec(location.search);
+                return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
+            }('op');
+            selectOperation(op?op:'URL Encode');
+        }
+        $(document).ready(pageLoad);
+
+        // Operation selection
+        function selectOperation(op) {
+            var encode = op.endsWith(' Encode');
+            if (op.startsWith('URL ')) {
+                t = urlEncoder(encode);
+            } else if (op.startsWith('HTML ')) {
+                t = htmlEncoder(encode);
+            } else if (op.startsWith('Base 64 ')) {
+                t = base64Encoder(encode);
+            } else if (op.startsWith('Base 32 ')) {
+                t = base32Encoder(encode);
+            } else if (op.startsWith('Hexadecimal ')) {
+                t = hexEncoder(encode);
+            } else {
+                return;
+            }
+            $('#operationDropdown').html(op);
+        }
+    </script>
+</head>
+
+<body>
+
+<header>
+    <div class="collapse bg-dark" id="navbarHeader">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-md-7 py-4">
+                    <h4 class="text-white">About</h4>
+                    <p class="text-muted">This page contains some useful tools to run common data conversions sometimes
+                        required by developers.</p>
+                </div>
+                <div class="col-sm-4 offset-md-1 py-4">
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-white">Back to welcome page</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container d-flex justify-content-between">
+            <a href="#" class="navbar-brand d-flex align-items-center">
+                <strong>JP</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader"
+                    aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main role="main">
+
+    <section class="text-center">
+        <div class="container-fluid">
+            <h1>Online data encoding tools</h1>
+            <p class="lead text-muted">Url, Html, Base 64, Base 32 and hexadecimal.</p>
+        </div>
+    </section>
+
+    <section class="text-center">
+        <div class="container-fluid">
+            <div class="btn-group dropdown">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                    id="operationDropdown">
+                    Select encoding operation
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#" onclick="selectOperation('URL Encode')">URL Encode</a>
+                    <a class="dropdown-item" href="#" onclick="selectOperation('URL Decode')">URL Decode</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#" onclick="selectOperation('HTML Encode')">HTML Encode</a>
+                    <a class="dropdown-item" href="#" onclick="selectOperation('HTML Decode')">HTML Decode</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#" onclick="selectOperation('Base 64 Encode')">Base 64 Encode</a>
+                    <a class="dropdown-item" href="#" onclick="selectOperation('Base 64 Decode')">Base 64 Decode</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#" onclick="selectOperation('Base 32 Encode')">Base 32 Encode</a>
+                    <a class="dropdown-item" href="#" onclick="selectOperation('Base 32 Decode')">Base 32 Decode</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#" onclick="selectOperation('Hexadecimal Encode')">Hexadecimal Encode</a>
+                    <a class="dropdown-item" href="#" onclick="selectOperation('Hexadecimal Decode')">Hexadecimal Decode</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="text-center">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-5">
+                    <textarea class="form-control" id="source"></textarea>
+                </div>
+                <div class="col-2">
+                    <p class="text-muted"><a href="#" onclick="t()">&gt;</a></p>
+                </div>
+                <div class="col-5">
+                    <textarea class="form-control" id="destination"></textarea>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="text-muted">
+    <section class="text-center">
+        <div class="container">
+            <small>
+                <p class="text-muted">
+                Find original Base64 encode/decode script at
+                    <a href="http://www.webtoolkit.info/javascript-base64.html">http://www.webtoolkit.info/javascript-base64.html</a><br/>
+                Find original Base32 encode/decode script at
+                    <a href="https://github.com/agnoster/base32-js">https://github.com/agnoster/base32-js</a><br/>
+                Find original Hexadecimal encode/decode script at
+                    <a href="https://gist.github.com/valentinkostadinov/5875467">https://gist.github.com/valentinkostadinov/5875467</a><br/>
+
+                </p>
+                <p class="text-muted">Released under the <a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a></p>
+            </small>
+        </div>
+    </section>
+</footer>
+
+</body>
+
+</html>
