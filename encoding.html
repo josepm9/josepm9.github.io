@@ -39,12 +39,42 @@
     <script src="js/webtoolkit.base64.js"></script>
     <script src="js/base32.js"></script>
     <script src="js/hex.js"></script>
-    <!-- Page Styles -->
+    <!-- Page styles to allow the textarea to fill the vertical empty space -->
     <style>
-        html, body, .fill, container-fluid, textarea {
+        html, body {
             height: 100%;
         }
-
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            display: flex;
+            flex-grow: 1;
+            flex-direction: column;
+        }
+        .container-fluid {
+            display: flex;
+            flex-grow: 1;
+            flex-direction: column;
+        }
+        .btn-group {
+            justify-content: center;
+        }
+        #transformButton {
+            flex: 0 0 auto;
+        }
+        #transformSection {
+            display: flex;
+            flex-grow: 1;
+            flex-direction: column;
+        }
+        .row {
+            flex-grow: 1;
+        }
+        textarea.form-control {
+            height: 100%;
+        }
     </style>
 
     <!-- Page script -->
@@ -232,14 +262,14 @@
         </div>
     </section>
 
-    <section class="text-center">
+    <section class="text-center" id="transformSection">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-5">
                     <textarea class="form-control" id="source"></textarea>
                 </div>
                 <div class="col-2">
-                    <p class="text-muted"><a href="#" onclick="t()">&gt;</a></p>
+                    <p class="text-muted"><a href="#" onclick="t()" id="transformButton">&gt;</a></p>
                 </div>
                 <div class="col-5">
                     <textarea class="form-control" id="destination"></textarea>
